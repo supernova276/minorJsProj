@@ -136,7 +136,7 @@ else{
 }
 if(fnflag && lnflag && emailflag && pwdflag){
     fnTarget.value=lnTarget.value=pwdTarget.value=emailTarget.value="";
-    window.location.href="/success.html";   
+    window.location.href="./success.html";   
 }
 })
 

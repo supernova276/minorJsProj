@@ -1,29 +1,28 @@
 import { renderNotes } from "./app.js";
+let arrayOfNotes=JSON.parse(localStorage.getItem("notes"))
+let showArchiveNotes=document.querySelector(".archive-notes-container")
+let showPinnedNotes=document.querySelector(".pinned-notes-container")
+console.log("hiiiiiiiiiiiiiiiii",showPinnedNotes)
 
-let arrayOfNotes = JSON.parse(localStorage.getItem("notes")) || [];
+showArchiveNotes.addEventListener("click"  , (e)=>{
+    let type=e.target.dataset.type;
+    let noteId=e.target.dataset.id;
 
-let showArchivedNotes = document.querySelector(".archive-notes-container");
+switch(type){
+    case "del" :
+        arrayOfNotes=arrayOfNotes.filter(({id})=>id.toString()!==noteId)
+        showArchiveNotes.innerHTML=renderNotes(arrayOfNotes.filter(({isPinned,isArchieved})=>isArchieved && isPinned?isPinned:isArchieved ))
+        localStorage.setItem("notes",JSON.stringify(arrayOfNotes))
+        break;
+    case "archive":
+        console.log("inside arehive")
+        arrayOfNotes=arrayOfNotes.map(({note})=>note.id===noteId? {isArchieved:!note.isArchieved}:note)
+        showArchiveNotes.innerHTML=renderNotes(arrayOfNotes.filter(({isPinned,isArchieved})=>isArchieved && isPinned?isPinned:isArchieved ))
+        showPinnedNotes.innerHTML=renderNotes(arrayOfNotes.filter(({isPinned,isArchieved})=>isPinned && !isArchieved))
+        localStorage.setItem("notes",JSON.stringify(arrayOfNotes))
+        break;
+    // 
+}
 
-showArchivedNotes.addEventListener("click", (event) => {
-    let noteId = event.target.dataset.id;
-    let type = event.target.dataset.type;
-    switch (type){
-        case "del":
-            arrayOfNotes = arrayOfNotes.filter(({
-                id
-            }) => id.toString() !== noteId);
-            showArchivedNotes.innerHTML = renderNotes(arrayOfNotes.filter(({isArchived}) => isArchived));
-            localStorage.setItem("notes", JSON.stringify(arrayOfNotes));
-            break;
-        case "archived":
-            arrayOfNotes = arrayOfNotes.map(note => note.id.toString() === noteId ? {
-                ...note,
-                isArchived: !note.isArchived
-            } : note);
-            showArchivedNotes.innerHTML = renderNotes(arrayOfNotes.filter(({isArchived}) => isArchived));
-            localStorage.setItem("notes", JSON.stringify(arrayOfNotes));
-            break
-    }
 })
-
-showArchivedNotes.innerHTML = renderNotes(arrayOfNotes.filter(({isArchived}) => isArchived));
+showArchiveNotes.innerHTML=renderNotes(arrayOfNotes.filter(({isPinned,isArchieved})=>isArchieved && isPinned?isPinned:isArchieved))
